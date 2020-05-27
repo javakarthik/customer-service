@@ -48,7 +48,7 @@ public class CustomerController {
 
     @Bean
     WebClient webClient() {
-        return WebClient.create("http://localhost:8082");
+        return WebClient.create("http://order-service:8082");
     }
 
 
