@@ -26,7 +26,7 @@ public class CustomerController {
     WebClient webClient;
 
 
-    @GetMapping(value = "/v1/customers/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/customers/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> getCustomerOrder(@PathVariable String id){
         log.info("CustomerController");
         System.out.println("Id :"+id);
@@ -35,7 +35,7 @@ public class CustomerController {
         /*System.out.println("Customer name :"+customer);
         Mono<String> customerMono;
         customerMono = Mono.just(customer).log();*/
-        Mono<String> customerOrder = webClient.get().uri("/v1/orders/{id}",id)
+        Mono<String> customerOrder = webClient.get().uri("/orders/{id}",id)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(String.class)
