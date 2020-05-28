@@ -14,7 +14,7 @@ public class ReactiveServerConfig {
         return WebClient
                 .builder()
                 .filter(headerExchange)
-                .baseUrl(demoProperties.getBackendUri())
+                .baseUrl(System.getenv("order-service"))
                 .build();
     }
 }
