@@ -1,5 +1,5 @@
 package com.demo;
-import com.demo.reactiveserver.config.DemoProperties;
+import com.demo.DemoProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;

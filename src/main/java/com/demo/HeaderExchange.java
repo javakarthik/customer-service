@@ -1,5 +1,5 @@
 package com.demo;
-import com.demo.reactiveserver.config.DemoProperties;
+import com.demo.DemoProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;

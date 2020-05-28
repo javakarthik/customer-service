@@ -1,5 +1,5 @@
 package com.demo;
-import com.demo.reactiveserver.config.exchange.HeaderExchange;
+import com.demo.HeaderExchange;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
