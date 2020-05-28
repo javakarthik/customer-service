@@ -45,11 +45,11 @@ public class CustomerController {
         return customerOrder;
        /* return */
     }
-
+/*
     @Bean
     WebClient webClient() {
         return WebClient.create(System.getenv("order-service"));
-    }
+    }*/
 
 
 }
