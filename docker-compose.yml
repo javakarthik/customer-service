@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+   billq-service:
+     image: billq-service:latest
+     environment:
+      - price= eighthundered
+     restart: always     
+ 
+
+   order-service:
+     depends_on:
+       - billq-service
+     image: order-service:latest
+     environment:
+      - billq-service=http://billq-service:8083
+     restart: always
+
+   customer-service:
+     depends_on:
+       - order-service
+     image: customer-service:latest
+     environment:
+      - order-service=http://order-service:8082
+     ports:
+       - "8081:8081"
+     restart: always

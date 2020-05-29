@@ -1,0 +1,208 @@
+---
+# Service to expose web frontend
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service
+spec:
+  selector:
+    app: customer-service
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8081
+    targetPort: 8081
+
+---
+# Web frontend
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service-deployment
+  labels:
+    app: customer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-service
+  template:
+    metadata:
+      labels:
+        app: customer-service
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/connect-service-upstreams": "order-service:1234"
+    spec:
+      containers:
+      - name: customer-service
+        image: customer-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8081
+        env:
+        - name: "order-service"
+          value: "http://localhost:1234"
+        - name: "HTTP_CLIENT_KEEP_ALIVES"
+          value: "false"
+        - name: "SERVER_TYPE"
+          value: "http"
+        - name: "HTTP_CLIENT_APPEND_REQUEST"
+          value: "true"
+        - name: "TIMING_50_PERCENTILE"
+          value: "20ms"
+        - name: "TIMING_90_PERCENTILE"
+          value: "30ms"
+        - name: "TIMING_99_PERCENTILE"
+          value: "40ms"
+        - name: "TIMING_VARIANCE"
+          value: "10"
+        - name: "spring.zipkin.base-url"
+          value: "http://jaeger-collector:9411"  
+
+---
+# API service version 2
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deployment
+  labels:
+    app: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/connect-service-upstreams": "billq-service:1234"
+    spec:
+      containers:
+      - name: order-service 
+        image: order-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8082
+        env:
+        - name: "billq-service"
+          value: "http://localhost:1234"         
+        - name: "SERVER_TYPE"
+          value: "http"
+        - name: "HTTP_CLIENT_APPEND_REQUEST"
+          value: "true"
+        - name: "TIMING_50_PERCENTILE"
+          value: "20ms"
+        - name: "TIMING_90_PERCENTILE"
+          value: "30ms"
+        - name: "TIMING_99_PERCENTILE"
+          value: "40ms"
+        - name: "TIMING_VARIANCE"
+          value: "10"
+        - name: "spring.zipkin.base-url" 
+          value: "http://jaeger-collector:9411"
+ 
+
+---
+# API service version 1
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billq-service-deployment-v1
+  labels:
+    app: billq-service-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billq-service-v1
+  template:
+    metadata:
+      labels:
+        app: billq-service-v1
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/service-meta-version": "1"
+        "consul.hashicorp.com/service-tags": "v1"
+    spec:
+      containers:
+      - name: billq-service
+        image: billq-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8083
+        env:
+        - name: "price"
+          value: "eight hundered from v1" 
+        - name: "SERVER_TYPE"
+          value: "http"
+        - name: "HTTP_CLIENT_APPEND_REQUEST"
+          value: "true"
+        - name: "TIMING_50_PERCENTILE"
+          value: "20ms"
+        - name: "TIMING_90_PERCENTILE"
+          value: "30ms"
+        - name: "TIMING_99_PERCENTILE"
+          value: "40ms"
+        - name: "TIMING_VARIANCE"
+          value: "10"
+        - name: "spring.zipkin.base-url" 
+          value: "http://jaeger-collector:9411"
+  
+
+---
+
+# API service version 2
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billq-service-deployment-v2
+  labels:
+    app: billq-service-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billq-service-v2
+  template:
+    metadata:
+      labels:
+        app: billq-service-v2
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/service-meta-version": "2"
+        "consul.hashicorp.com/service-tags"
+    spec:
+      containers:
+      - name: billq-service
+        image: billq-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8083
+        env:
+        - name: "price"
+          value: "four hundered from v2"
+        - name: "SERVER_TYPE"
+          value: "http"
+        - name: "HTTP_CLIENT_APPEND_REQUEST"
+          value: "true"
+        - name: "TIMING_50_PERCENTILE"
+          value: "20ms"
+        - name: "TIMING_90_PERCENTILE"
+          value: "30ms"
+        - name: "TIMING_99_PERCENTILE"
+          value: "40ms"
+        - name: "TIMING_VARIANCE"
+          value: "10"
+        - name: "spring.zipkin.base-url" 
+          value: "http://jaeger-collector:9411"
+  
+---
